@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Study Scheduler</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Smart Study Scheduler</h1>
+                <p>Organize your learning journey with AI-powered scheduling</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <div class="action-card" onclick="showAddTaskModal()">
+                    <i class="fas fa-plus"></i>
+                    <h3>Add Task</h3>
+                    <p>Create new study tasks</p>
+                </div>
+                <div class="action-card" onclick="showScheduleModal()">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>View Schedule</h3>
+                    <p>See your study timeline</p>
+                </div>
+                <div class="action-card" onclick="showProgressModal()">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Progress</h3>
+                    <p>Track your learning</p>
+                </div>
+                <div class="action-card" onclick="showSettingsModal()">
+                    <i class="fas fa-cog"></i>
+                    <h3>Settings</h3>
+                    <p>Customize preferences</p>
+                </div>
+            </section>
+
+            <!-- Today's Schedule -->
+            <section class="today-schedule">
+                <h2><i class="fas fa-calendar-day"></i> Today's Schedule</h2>
+                <div class="schedule-list" id="todaySchedule">
+                    <!-- Schedule items will be populated here -->
+                </div>
+            </section>
+
+            <!-- Upcoming Tasks -->
+            <section class="upcoming-tasks">
+                <h2><i class="fas fa-tasks"></i> Upcoming Tasks</h2>
+                <div class="task-list" id="upcomingTasks">
+                    <!-- Tasks will be populated here -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Add Task Modal -->
+        <div id="addTaskModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('addTaskModal')">&times;</span>
+                <h2>Add New Study Task</h2>
+                <form id="addTaskForm">
+                    <div class="form-group">
+                        <label for="taskName">Task Name</label>
+                        <input type="text" id="taskName" required placeholder="e.g., Read Chapter 5 of Physics">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="mathematics">Mathematics</option>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="biology">Biology</option>
+                            <option value="history">History</option>
+                            <option value="literature">Literature</option>
+                            <option value="computer-science">Computer Science</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority" required>
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="estimatedTime">Estimated Time (hours)</label>
+                        <input type="number" id="estimatedTime" min="0.5" max="8" step="0.5" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dueDate">Due Date</label>
+                        <input type="date" id="dueDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description (optional)</label>
+                        <textarea id="description" rows="3" placeholder="Additional details about the task..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" onclick="closeModal('addTaskModal')" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">Add Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Schedule Modal -->
+        <div id="scheduleModal" class="modal">
+            <div class="modal-content large">
+                <span class="close" onclick="closeModal('scheduleModal')">&times;</span>
+                <h2>Study Schedule</h2>
+                <div class="schedule-view">
+                    <div class="week-selector">
+                        <button onclick="previousWeek()" class="btn-secondary"><i class="fas fa-chevron-left"></i></button>
+                        <h3 id="currentWeek">Week of August 24, 2025</h3>
+                        <button onclick="nextWeek()" class="btn-secondary"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="weekly-calendar" id="weeklyCalendar">
+                        <!-- Weekly calendar will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Modal -->
+        <div id="progressModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('progressModal')">&times;</span>
+                <h2>Study Progress</h2>
+                <div class="progress-stats">
+                    <div class="stat-card">
+                        <h3>Tasks Completed</h3>
+                        <p class="stat-number" id="completedTasks">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Study Hours</h3>
+                        <p class="stat-number" id="studyHours">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Success Rate</h3>
+                        <p class="stat-number" id="successRate">0%</p>
+                    </div>
+                </div>
+                <div class="progress-chart">
+                    <h3>Weekly Progress</h3>
+                    <div class="chart-container" id="progressChart">
+                        <!-- Chart will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('settingsModal')">&times;</span>
+                <h2>Settings</h2>
+                <form id="settingsForm">
+                    <div class="form-group">
+                        <label for="studyGoal">Daily Study Goal (hours)</label>
+                        <input type="number" id="studyGoal" min="1" max="12" value="4">
+                    </div>
+                    <div class="form-group">
+                        <label for="breakDuration">Break Duration (minutes)</label>
+                        <input type="number" id="breakDuration" min="5" max="30" value="15">
+                    </div>
+                    <div class="form-group">
+                        <label for="studyGoal">Enable Notifications</label>
+                        <input type="checkbox" id="notifications" checked>
+                    </div>
+                    <div class="form-group">
+                        <label for="theme">Theme</label>
+                        <select id="theme">
+                            <option value="light" selected>Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="auto">Auto</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" onclick="closeModal('settingsModal')" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Settings</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
